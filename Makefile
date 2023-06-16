@@ -29,8 +29,8 @@ build/parallel: src/parallel.c build
 build/sequencial: src/sequencial.c build
 	$(CC) $(CFLAGS) -o build/sequencial src/sequencial.c -lm
 
-build/RAPPORT.pdf: RAPPORT.md
-	pandoc RAPPORT.md -o build/RAPPORT.pdf --template resources/eisvogel.latex --listings
+build/README.pdf: README.md
+	pandoc README.md -o build/README.pdf --template resources/eisvogel.latex --listings
 
 
 .PHONY: clean
@@ -41,5 +41,5 @@ clean:
 format:
 	pre-commit run -a
 
-rapport: build/RAPPORT.pdf
+report: build/README.pdf
 all: build/parallel build/sequencial

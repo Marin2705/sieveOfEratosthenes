@@ -3,34 +3,36 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include "common.h"
 
 #define MAX_THREADS 7
 
 typedef struct {
-  int n;
-  int* A;
-  int start;
-  int end;
+  size_t n;
+  char* A;
+  size_t* i;
+  size_t plage;
+  size_t numThreads;
 } ThreadArgs;
 
 void* sieveOfEratosthenes(void* arg) {
+  size_t i = *threadArgs->i;
   ThreadArgs* threadArgs = (ThreadArgs*)arg;
-  int n = threadArgs->n;
-  int* A = threadArgs->A;
-  int start = threadArgs->start;
-  int end = threadArgs->end;
+  size_t n = threadArgs->n;
+  char* A = threadArgs->A;
+  size_t plage = threadArgs->plage;
+  size_t numThreads = threadArgs->numThreads;
 
-  for (int i = 2; i * i < n; i++) {
-    if (A[i] == 1) {
-      for (int j = i * i; j < n; j += i) {
-        if (j >= start && j < end) {
-          A[j] = 0;
-        }
-      }
+  while (i) {
+    size_t i = *threadArgs->i;
+    for (size_t j = i * i + plage; j < n; j += i * numThreads) {
+      A[j] = 0;
     }
+
   }
 
   pthread_exit(NULL);
+  return NULL;
 }
 
 int main() {
@@ -39,24 +41,20 @@ int main() {
   // Début du chronomètre
   start = clock();
 
-  int n = 4000000;
-  int* A = malloc(sizeof(int) * n);
-  for (int i = 2; i < n; i++) {
-    A[i] = 1;
-  }
-
-  int numThreads = MAX_THREADS;  // Nombre de threads à utiliser
+  size_t n = N;
+  char* A = initArray(n);
+  size_t numThreads = MAX_THREADS;  // Nombre de threads à utiliser
   pthread_t threads[MAX_THREADS];
   ThreadArgs threadArgs[MAX_THREADS];
 
-  int range =
+  size_t range =
       (n - 2) / numThreads;  // Taille de la plage gérée par chaque thread
 
-  for (int i = 0; i < numThreads; i++) {
+  for (size_t i = 0; i < numThreads; i++) {
     threadArgs[i].n = n;
     threadArgs[i].A = A;
-    threadArgs[i].start = 2 + i * range;
-    threadArgs[i].end = (i == numThreads - 1) ? n : (2 + (i + 1) * range);
+    threadArgs[i].plage = i;
+    threadArgs[i].numThreads = numThreads;
 
     int result = pthread_create(&threads[i], NULL, sieveOfEratosthenes,
                                 (void*)&threadArgs[i]);
@@ -66,7 +64,7 @@ int main() {
     }
   }
 
-  for (int i = 0; i < numThreads; i++) {
+  for (size_t i = 0; i < numThreads; i++) {
     int result = pthread_join(threads[i], NULL);
     if (result != 0) {
       printf("Erreur lors de l'attente du thread.\n");
@@ -74,17 +72,13 @@ int main() {
     }
   }
 
-  printf("Les nombres premiers sont :\n");
-  for (int i = 2; i < n; i++) {
-    if (A[i] == 1) {
-      printf("%d\n", i);
-    }
-  }
-
-  free(A);
-
   // Fin du chronomètre
   end = clock();
+
+  printf("Les nombres premiers sont :\n");
+  printArray(n, A);
+
+  free(A);
 
   // Calcul du temps écoulé en secondes
   cpu_time_used = ((double)(end - start)) / CLOCKS_PER_SEC;

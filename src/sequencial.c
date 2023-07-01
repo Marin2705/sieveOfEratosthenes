@@ -2,34 +2,28 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include "common.h"
 
 int main() {
+  // Initialisation
   clock_t start, end;
   double cpu_time_used;
+  size_t n = N;
+  char *A = initArray(n);
+
   // Début du chronomètre
   start = clock();
 
-  int n = 4000000;
-  int *A = malloc(sizeof(int) * n);
-  for (int i = 2; i < n; i++) {
-    A[i] = 1;
-  }
-  for (int i = 2; i < sqrt(n); i++) {
-    if (A[i] == 1) {
-      for (int j = i * i; j < n; j += i) {
-        A[j] = 0;
-      }
-    }
-  }
-  printf("Les nombres premiers sont : \n");
-  for (int i = 2; i < n; i++) {
-    if (A[i] == 1) {
-      printf("%d\n", i);
-    }
-  }
+  // Lancement de l'algorithme
+  sequancialSieveOfEratosthenes(n, A);
 
   // Fin du chronomètre
   end = clock();
+
+  // Affichage des nombres
+  printf("Les nombres premiers sont : \n");
+  printArray(n, A);
+  free(A);
 
   // Calcul du temps écoulé en secondes
   cpu_time_used = ((double)(end - start)) / CLOCKS_PER_SEC;

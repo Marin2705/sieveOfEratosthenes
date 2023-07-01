@@ -23,11 +23,14 @@ endif
 build:
 	mkdir -p build
 
-build/parallel: src/parallel.c build
-	$(CC) $(CFLAGS) -o build/parallel src/parallel.c -lpthread
+build/common.o: src/common.c build
+	$(CC) $(CFLAGS) -c -o build/common.o src/common.c -lm
 
-build/sequencial: src/sequencial.c build
-	$(CC) $(CFLAGS) -o build/sequencial src/sequencial.c -lm
+build/parallel: src/parallel.c build/common.o
+	$(CC) $(CFLAGS) -o build/parallel src/parallel.c build/common.o -lpthread
+
+build/sequencial: src/sequencial.c build/common.o
+	$(CC) $(CFLAGS) -o build/sequencial src/sequencial.c build/common.o
 
 build/README.pdf: README.md
 	pandoc README.md -o build/README.pdf --template resources/eisvogel.latex --listings

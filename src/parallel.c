@@ -116,7 +116,7 @@ int main() {
   gettimeofday(&stop, NULL);
 
   printf("Les nombres premiers sont :\n");
-  // printArray(N, A);
+  printArray(N, A);
   free(A);
 
   // Calculate the duration in seconds

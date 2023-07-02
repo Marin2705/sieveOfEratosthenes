@@ -2,7 +2,7 @@
 title: TD08
 date: 2023-06-16
 author:
-  - Dashstrom
+  - Félix Incerti
   - Marin Bouanchaud
 keywords:
   - c
@@ -14,16 +14,11 @@ geometry: "top=3cm, bottom=3cm, left=2cm, right=2cm"
 block-headings: true
 ---
 
-## aa
+## Run
 
-### zzz
+`make`
 
-> aaaa
-
-1. blabla
-
-```c
-codu
-```
+`./build/parallel`
+`./build/sequencial`
 
 <div style="page-break-after: always; visibility: hidden"> \pagebreak </div>

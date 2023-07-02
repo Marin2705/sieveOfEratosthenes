@@ -22,7 +22,7 @@ int main() {
 
   // Affichage des nombres
   printf("Les nombres premiers sont : \n");
-  // printArray(n, A);
+  printArray(n, A);
   free(A);
 
   // Calculate the duration in seconds

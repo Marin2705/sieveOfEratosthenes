@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+
 #include "common.h"
 
 int main() {
@@ -9,7 +10,7 @@ int main() {
   clock_t start, end;
   double cpu_time_used;
   size_t n = N;
-  char *A = initArray(n);
+  char* A = initArray(n);
 
   // Début du chronomètre
   start = clock();
@@ -29,6 +30,6 @@ int main() {
   cpu_time_used = ((double)(end - start)) / CLOCKS_PER_SEC;
 
   // Affichage du temps d'exécution
-  printf("Temps d'exécution : %f secondes\n", cpu_time_used);
+  printf("Temps d'execution : %f secondes\n", cpu_time_used);
   return 0;
 }

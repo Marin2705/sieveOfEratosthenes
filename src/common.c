@@ -8,6 +8,16 @@
 #include <sys/shm.h>
 #include <sys/types.h>
 
+// Function to calculate the time difference in seconds
+float timeval_diff_seconds(struct timeval start, struct timeval stop) {
+  // Calculate the difference in microseconds
+  long long diff_usec =
+      (stop.tv_sec - start.tv_sec) * 1000000LL + (stop.tv_usec - start.tv_usec);
+
+  // Convert microseconds to seconds and return the result
+  return diff_usec / 1000000.0f;
+}
+
 static int semid = -1;
 
 /*

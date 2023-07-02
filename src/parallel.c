@@ -50,9 +50,8 @@ int main() {
   setbuf(stdout, NULL);
   setbuf(stderr, NULL);
 
-  clock_t start, end;
-  double cpu_time_used;
-  start = clock();
+  struct timeval stop, start;
+  gettimeofday(&start, NULL);
 
   char* A = initArray(N);
   pthread_t threads[MAX_THREADS];
@@ -126,16 +125,18 @@ int main() {
   }
   detruire_semaphore();
   // Fin du chronomètre
-  end = clock();
+
+  gettimeofday(&stop, NULL);
 
   printf("Les nombres premiers sont :\n");
   // printArray(N, A);
   free(A);
 
-  // Calcul du temps écoulé en secondes
-  cpu_time_used = ((double)(end - start)) / CLOCKS_PER_SEC;
+  // Calculate the duration in seconds
+  float duration = timeval_diff_seconds(start, stop);
 
-  // Affichage du temps d'exécution
-  printf("Temps d'execution : %f secondes\n", cpu_time_used);
+  // Output the result
+  printf("Duration: %.6f seconds.\n", duration);
+
   return 0;
 }

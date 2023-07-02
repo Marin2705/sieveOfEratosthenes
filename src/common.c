@@ -9,8 +9,6 @@
 #include <sys/types.h>
 
 static int semid = -1;
-struct sembuf op_P = {-1, -1, 0};
-struct sembuf op_V = {-1, 1, 0};
 
 /*
    1.
@@ -115,7 +113,7 @@ int P(int sem) {
     perror("[P] identifiant invalide");
     return -2;
   }
-  op_P.sem_num = sem;
+  struct sembuf op_P = {sem, -1, 0};
   int ret = semop(semid, &op_P, 1);
   if (ret == -1) perror("[P] semop échoue");
   return ret;
@@ -126,12 +124,12 @@ int V(int sem) {
     perror("[V] non initialisé");
     return -1;
   }
-  if (sem < 0 || sem > 4) {
+  if (sem < 0 || sem > N_SEM) {
     perror("[V] identifiant invalide");
     return -2;
   }
 
-  op_V.sem_num = sem;
+  struct sembuf op_V = {sem, 1, 0};
   int ret = semop(semid, &op_V, 1);
   if (ret == -1) perror("[P] semop échoue");
   return ret;

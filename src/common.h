@@ -7,8 +7,8 @@
 #include <sys/shm.h>
 #include <sys/types.h>
 #include <unistd.h>
-#define N_SEM 3
-#define N 100000
+#define N_SEM 10
+#define N 100000000
 
 int init_semaphore(void);
 int detruire_semaphore(void);

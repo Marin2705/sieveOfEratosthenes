@@ -26,7 +26,7 @@ int main() {
   free(A);
 
   // Calculate the duration in seconds
-  float duration = timeval_diff_seconds(start, stop);
+  double duration = timeval_diff_seconds(start, stop);
 
   // Output the result
   printf("Duration: %.6f seconds.\n", duration);

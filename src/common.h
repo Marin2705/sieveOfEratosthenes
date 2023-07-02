@@ -9,7 +9,7 @@
 #include <sys/types.h>
 #include <unistd.h>
 
-#define N_SEM 10
+#define N_SEM 3
 #define N 4000000
 
 float timeval_diff_seconds(struct timeval start, struct timeval stop);

@@ -11,10 +11,9 @@
 
 #include "common.h"
 
-#define MAX_THREADS 16
+#define MAX_THREADS 7
 
 typedef struct {
-  size_t id;
   char* A;
   size_t* i;
   size_t* start;
@@ -24,21 +23,18 @@ typedef struct {
 void* sieveOfEratosthenes(void* arg) {
   ThreadArgs* threadArgs = (ThreadArgs*)arg;
   char* A = threadArgs->A;
-  size_t id = threadArgs->id;
 
   while (1) {
     P(0);  // Redemander leurs depart
     size_t i = *threadArgs->i;
-    size_t start = *threadArgs->start;
+    size_t start = *threadArgs->start - *threadArgs->start % i;
     size_t end = *threadArgs->end;
     if (end == 0) break;
     for (size_t j = start; j < end; j += i) {
       A[j] = 0;
     }
     V(1);  // signaler au père que le traitement est finis
-    P(2);  // attendre que tous les traitement soit finis (eviter qu'un fils
-           // vole P(0) à un autre)
-    V(3);  // Qu'il on reprit
+    P(2);  // attendre que le père relance
   }
 
   pthread_exit(NULL);
@@ -64,10 +60,8 @@ int main() {
   val_sem(0, 0);
   val_sem(1, 0);
   val_sem(2, 0);
-  val_sem(3, 0);
 
   for (size_t t = 0; t < MAX_THREADS; t++) {
-    threadArgs[t].id = t;
     threadArgs[t].A = A;
     threadArgs[t].i = dataI + t;
     threadArgs[t].start = dataStart + t;
@@ -88,23 +82,16 @@ int main() {
         /* Mise à jour des arguments */
         *threadArgs[t].i = i;
         *threadArgs[t].start = i2 + t * step;
-        *threadArgs[t].end = i2 + (t + 1) * step;
+        *threadArgs[t].end = *threadArgs[t].start + step;
         if (*threadArgs[t].end > N) {
           *threadArgs[t].end = N;
         }
       }
-      for (size_t t = 0; t < MAX_THREADS; t++) {
-        V(0);
-      }
-      for (size_t t = 0; t < MAX_THREADS; t++) {
+      for (size_t t = 0; t < MAX_THREADS; t++) V(0);
+      for (size_t t = 0; t < MAX_THREADS; t++)
         P(1);  // Attendre que les fils ai finis
-      }
-      for (size_t t = 0; t < MAX_THREADS; t++) {
+      for (size_t t = 0; t < MAX_THREADS; t++)
         V(2);  // Terminer leurs traitement
-      }
-      for (size_t t = 0; t < MAX_THREADS; t++) {
-        P(3);  // Terminer leurs traitement
-      }
     }
   }
 
@@ -133,7 +120,7 @@ int main() {
   free(A);
 
   // Calculate the duration in seconds
-  float duration = timeval_diff_seconds(start, stop);
+  double duration = timeval_diff_seconds(start, stop);
 
   // Output the result
   printf("Duration: %.6f seconds.\n", duration);

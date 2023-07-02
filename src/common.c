@@ -21,9 +21,6 @@ float timeval_diff_seconds(struct timeval start, struct timeval stop) {
 static int semid = -1;
 
 /*
-   1.
-   int init_semaphore(void)
-
    Crée un groupe de N_SEM sémaphores utilisables dans le processus qui
    fait l'appel et dans ses fils.
    Cette fonction devra renvoyer 0 en cas de réussite, -1 si elle
@@ -53,9 +50,6 @@ int init_semaphore() {
 }
 
 /*
-   2.
-   int detruire_semaphore(void)
-
    Détruit le groupe de sémaphores créé par "init_semaphore",
    en fin de programme.
    Retourne -1 si "init_semaphore" n'a pas été appelé avant,
@@ -73,9 +67,6 @@ int detruire_semaphore() {
 }
 
 /*
-   3.
-   int val_sem(int sem, int val)
-
    Attribue la valeur "val" au sémaphore "sem" du groupe de sémaphores créé par
    "init_semaphore".
    Retourne la valeur de retour de "semctl" en cas de réussite,
@@ -104,9 +95,6 @@ int val_sem(int sem, int val) {
 }
 
 /*
-   4.
-   int P(int sem)
-
    Réalise l'opération (P) sur le sémaphore numéro "sem" du groupe
    de sémaphores créé par "init_semaphore".
    Retourne la valeur de retour de "semop" en cas de réussite,
@@ -149,7 +137,7 @@ void printArray(size_t n, char *A) {
   printf("[");
   for (size_t i = 2; i < n; i++) {
     if (A[i] == 1) {
-      printf("%ld,", i);
+      printf("%zu,", i);
     }
   }
   printf("]\n");

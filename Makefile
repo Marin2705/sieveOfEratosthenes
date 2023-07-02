@@ -23,7 +23,7 @@ endif
 build:
 	mkdir -p build
 
-build/common.o: src/common.c build
+build/common.o: src/common.c src/common.h build
 	$(CC) $(CFLAGS) -c -o build/common.o src/common.c -lm -lsempv
 
 build/parallel: src/parallel.c build/common.o
@@ -49,4 +49,5 @@ format:
 	pre-commit run -a
 
 report: build/README.pdf
+
 all: build/parallel build/sequencial
